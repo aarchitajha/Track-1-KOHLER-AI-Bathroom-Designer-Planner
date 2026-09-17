@@ -2,7 +2,7 @@
 
 An interactive AI design assistant that turns a customer's room dimensions, budget, and aesthetic preference into optimized, real Kohler product bundle recommendations — visualized in an accurate 3D room, refinable through natural conversation, and viewable in AR on both Android and iOS.
 
-Built for the **Kohler AI Case Study Competition — Track 1**.
+
 
 ---
 
@@ -126,4 +126,4 @@ See [`DEPLOYMENT.md`](./DEPLOYMENT.md) for full instructions on deploying the ba
 
 - [`kohler-bathroom-designer-PRD.md`](./kohler-bathroom-designer-PRD.md) — full product requirements and design specification
 - [`IMPLEMENTATION.md`](./IMPLEMENTATION.md) — detailed technical implementation report and API contract
-- [`DEPLOYMENT.md`](./DEPLOYMENT.md) — deployment guide
+
