@@ -47,7 +47,7 @@ export default function ChatPanel({ messages, isSending, activeTool, onSendMessa
           <div>
             <h3 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-grey-800)' }}>Kohler Design Assistant</h3>
             <span style={{ fontSize: '10px', color: isSending ? '#e67e00' : 'var(--color-grey-400)', fontWeight: 600 }}>
-              {isSending ? 'Thinking via Ollama…' : 'AI Tool-Calling Agent'}
+              {isSending ? 'Thinking…' : 'AI Tool-Calling Agent'}
             </span>
           </div>
         </div>
