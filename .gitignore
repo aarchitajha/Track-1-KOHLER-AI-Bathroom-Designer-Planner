@@ -1,0 +1,42 @@
+# Secrets — never commit local env files
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Python & testing
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+kohler.db
+
+# LLM & Local Model Caches
+.ollama/
+models_cache/
+
+# Node / frontend build
+frontend/node_modules/
+node_modules/
+frontend/dist/
+dist/
+frontend/logs/
+*.log
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local verification artifacts
+*.png
+*.pdf
+audit_artifacts/
