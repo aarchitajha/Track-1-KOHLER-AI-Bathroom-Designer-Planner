@@ -22,6 +22,7 @@ _PLACEHOLDER_FRAGMENTS = (
     "your_key_here",
     "changeme",
     "replace-me",
+    "gsk_your_key_here",
 )
 
 
@@ -33,6 +34,10 @@ class Settings:
 
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
+    GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
+    # Groq model IDs can be deprecated with a hard cutoff date; verify current IDs at
+    # https://console.groq.com/docs/deprecations before changing production deployments.
+    GROQ_MODEL: str = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
     OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "llama3.2")
@@ -66,6 +71,18 @@ class Settings:
         lowered = key.lower()
         return not any(fragment in lowered for fragment in _PLACEHOLDER_FRAGMENTS)
 
+    def get_groq_api_key(self) -> str:
+        key = (self.GROQ_API_KEY or os.getenv("GROQ_API_KEY") or "").strip()
+        self.GROQ_API_KEY = key
+        return key
+
+    def is_groq_key_configured(self) -> bool:
+        key = self.get_groq_api_key()
+        if not key or not (key.startswith("gsk_") or key.startswith("gsk-")):
+            return False
+        lowered = key.lower()
+        return not any(fragment in lowered for fragment in _PLACEHOLDER_FRAGMENTS)
+
     def is_ollama_available(self) -> bool:
         try:
             import urllib.request
@@ -78,6 +95,8 @@ class Settings:
     def get_llm_mode(self) -> str:
         if self.is_anthropic_key_configured():
             return "anthropic"
+        if self.is_groq_key_configured():
+            return "groq"
         if self.is_ollama_available():
             return "ollama"
         return "none"
@@ -96,13 +115,16 @@ class Settings:
             key = self.get_anthropic_api_key()
             logger.info("ANTHROPIC_API_KEY present (length=%d). Mode: anthropic. Env files loaded: %s", len(key), loaded)
             return "anthropic"
+        elif mode == "groq":
+            logger.info("GROQ_API_KEY present. Mode: groq. Env files loaded: %s", loaded)
+            return "groq"
         elif mode == "ollama":
             logger.info("Using local Ollama (%s) at %s. Mode: ollama. Env files loaded: %s", self.OLLAMA_MODEL, self.OLLAMA_BASE_URL, loaded)
             return "ollama"
         else:
             msg = (
                 "FATAL: No LLM engine configured. "
-                "Either set ANTHROPIC_API_KEY in backend/.env, or ensure Ollama is running at "
+                "Either set ANTHROPIC_API_KEY or GROQ_API_KEY in backend/.env, or ensure Ollama is running at "
                 f"{self.OLLAMA_BASE_URL} with model '{self.OLLAMA_MODEL}'. "
                 f"Env files loaded: {loaded}. "
                 "The API will not start in silent offline/canned-response mode."

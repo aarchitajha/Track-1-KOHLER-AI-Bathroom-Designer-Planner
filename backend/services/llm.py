@@ -163,6 +163,9 @@ def get_session(session_id: str) -> Dict[str, Any]:
                 {"role": "system", "content": SYSTEM_PROMPT}
             ],
             "claude_messages": [],
+            "groq_messages": [
+                {"role": "system", "content": SYSTEM_PROMPT}
+            ],
             "current_params": {
                 "length_ft": 10.0,
                 "width_ft": 8.0,
@@ -720,6 +723,88 @@ async def _process_with_anthropic(session: dict, message: str) -> Dict[str, Any]
     }
 
 
+async def _process_with_groq(session: dict, message: str) -> Dict[str, Any]:
+    from openai import OpenAI
+
+    client = OpenAI(api_key=settings.GROQ_API_KEY, base_url="https://api.groq.com/openai/v1")
+    groq_msgs = session["groq_messages"]
+    groq_msgs.append({"role": "user", "content": message})
+
+    if len(groq_msgs) > 7:
+        groq_msgs = [groq_msgs[0]] + groq_msgs[-6:]
+        session["groq_messages"] = groq_msgs
+
+    logger.info(f"[LLM Agent] Invoking Groq ({settings.GROQ_MODEL}) with tools. User: {message!r}")
+
+    try:
+        response = client.chat.completions.create(
+            model=settings.GROQ_MODEL,
+            messages=groq_msgs,
+            tools=OLLAMA_TOOLS,
+            max_tokens=1024,
+            temperature=0.2,
+        )
+    except Exception as exc:
+        body = getattr(exc, "body", None) or {}
+        err = body.get("error", {}) if isinstance(body, dict) else {}
+        code = err.get("code") if isinstance(err, dict) else None
+        msg = err.get("message") if isinstance(err, dict) else str(exc)
+        logger.error(
+            "[LLM Agent] Groq request failed: model=%s status=%s code=%s message=%s",
+            settings.GROQ_MODEL,
+            getattr(exc, "status_code", "n/a"),
+            code,
+            msg,
+            exc_info=True,
+        )
+        raise
+
+    choice = response.choices[0]
+    executed_tool = None
+    tool_res = None
+    final_reply = ""
+
+    if choice.finish_reason == "tool_calls" and choice.message.tool_calls:
+        groq_msgs.append({
+            "role": "assistant",
+            "content": choice.message.content or "",
+            "tool_calls": [tc.model_dump() for tc in choice.message.tool_calls],
+        })
+        for tc in choice.message.tool_calls:
+            tool_name = tc.function.name
+            tool_args = json.loads(tc.function.arguments or "{}")
+            executed_tool = tool_name
+            tool_res = execute_tool_call(tool_name, tool_args, session)
+            groq_msgs.append({
+                "role": "tool",
+                "tool_call_id": tc.id,
+                "content": json.dumps(tool_res),
+            })
+
+        followup = client.chat.completions.create(
+            model=settings.GROQ_MODEL,
+            messages=groq_msgs,
+            max_tokens=1024,
+            temperature=0.2,
+        )
+        final_reply = followup.choices[0].message.content or tool_res.get("message", "Action completed.")
+        groq_msgs.append({"role": "assistant", "content": final_reply})
+    else:
+        final_reply = choice.message.content or ""
+        groq_msgs.append({"role": "assistant", "content": final_reply})
+
+    session["history"].append({"role": "assistant", "content": final_reply})
+    logger.info(f"[LLM Agent] Groq complete. Tool called: {executed_tool}. Reply length: {len(final_reply)}")
+
+    return {
+        "reply": final_reply,
+        "tool_called": executed_tool,
+        "tool_result": tool_res,
+        "active_bundle": session.get("active_bundle"),
+        "current_params": session["current_params"]
+    }
+
+
 async def process_chat_message(
     session_id: str,
     message: str,
@@ -751,11 +836,13 @@ async def process_chat_message(
     mode = settings.get_llm_mode()
     if mode == "anthropic":
         return await _process_with_anthropic(session, message)
+    elif mode == "groq":
+        return await _process_with_groq(session, message)
     elif mode == "ollama":
         return await _process_with_ollama(session, message, session_id=session_id)
     else:
         err = (
-            "No LLM configured. Please configure ANTHROPIC_API_KEY in backend/.env "
+            "No LLM configured. Please configure ANTHROPIC_API_KEY or GROQ_API_KEY in backend/.env "
             f"or start Ollama locally at {settings.OLLAMA_BASE_URL} with model '{settings.OLLAMA_MODEL}'."
         )
         logger.error(f"[LLM Agent] {err}")

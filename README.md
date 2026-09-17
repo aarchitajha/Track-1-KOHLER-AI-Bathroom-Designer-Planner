@@ -31,7 +31,7 @@ An interactive AI design assistant that turns a customer's room dimensions, budg
 - ReportLab (PDF generation)
 
 **AI / LLM**
-- Anthropic Claude (tool-calling agent + vision-based sketch analysis)
+
 - Local Ollama support (offline/dev mode) with a deterministic intent router for common commands
 - Groq (OpenAI-compatible) supported as a free hosted alternative to Ollama in production
 
@@ -72,45 +72,72 @@ kohler-track1/
 
 ### Prerequisites
 - Python 3.10+
-- Node.js + npm
-- Either an Anthropic API key, a Groq API key, or a local Ollama installation
+- Node.js 18+ and npm
+- A Groq key, Anthropic key, or a local Ollama instance
 
-### Backend
-```bash
-cd kohler-track1
-pip install -r backend/requirements.txt
+### 1) Create a Python virtual environment
+On Windows PowerShell:
+```powershell
+cd d:\kohler-track1
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 ```
-Create `backend/.env`:
+
+### 2) Install backend dependencies
+```powershell
+pip install -r backend\requirements.txt
 ```
+
+### 3) Configure environment variables
+Create or edit `backend/.env` with:
+```env
 DATABASE_URL=sqlite:///./kohler.db
-ANTHROPIC_API_KEY=your_key_here
-# or, for local dev without a hosted key:
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama3.2
+
+# Groq (recommended hosted option for this project)
+GROQ_API_KEY=gsk_your_key_here
+GROQ_MODEL=openai/gpt-oss-120b
+
+# Optional: Anthropic key
+# ANTHROPIC_API_KEY=sk-ant-api03-your-actual-key-here
+
+# Optional: local Ollama fallback
+# OLLAMA_BASE_URL=http://localhost:11434
+# OLLAMA_MODEL=llama3.2
 ```
-Seed the catalog:
-```bash
+
+> Important: if you previously ran `$env:GROQ_API_KEY=...` in PowerShell, that session-level environment variable can override the value in `.env`. For a clean run, close that terminal and open a fresh one before starting the backend.
+
+### 4) Seed the local catalog database
+```powershell
 python -m backend.db.load_catalog
 ```
-Run the server:
-```bash
-uvicorn backend.main:app --host 0.0.0.0 --port 8003 --reload
-```
-API docs available at `http://localhost:8003/docs`
 
-### Frontend
-```bash
-cd kohler-track1/frontend
+### 5) Run the backend
+```powershell
+uvicorn backend.main:app --host 0.0.0.0 --port 8004 --reload
+```
+
+Backend health check:
+- http://localhost:8004/health
+
+API docs:
+- http://localhost:8004/docs
+
+### 6) Run the frontend
+In a second terminal:
+```powershell
+cd d:\kohler-track1\frontend
 npm install
 npm run dev
 ```
-Served at `http://localhost:5173`
 
----
+Frontend URL:
+- http://localhost:5173
 
-## Deployment
-
-See [`DEPLOYMENT.md`](./DEPLOYMENT.md) for full instructions on deploying the backend (Render/Railway) and frontend (Vercel), including production database setup and LLM provider configuration.
+### 7) Verify the app is running
+- Backend health: `http://localhost:8004/health`
+- Frontend app: `http://localhost:5173`
+- If the chat returns `401 invalid_api_key`, check for a stale `GROQ_API_KEY` in the current PowerShell session and open a fresh terminal before restarting the backend.
 
 ---
 

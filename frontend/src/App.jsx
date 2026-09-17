@@ -7,7 +7,7 @@ import InputForm from './components/InputForm';
 import ChatPanel from './components/ChatPanel';
 import FixtureDetailModal from './components/FixtureDetailModal';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8003';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8004';
 
 const DEFAULT_FALLBACK_BUNDLE = {
   bundle_id: "bundle-balanced",
