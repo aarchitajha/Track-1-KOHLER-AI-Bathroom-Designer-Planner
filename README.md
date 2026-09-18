@@ -7,7 +7,8 @@
 
 ### 🌐 Production Website
 
-**[OPEN KOHLER AI BATHROOM DESIGNER](https://kohler-ai-bathroom-designer-planner-e1r8xz0z9.vercel.app/)**
+<a href="https://kohler-ai-bathroom-designer-planner-e1r8xz0z9.vercel.app/" target="_blank" rel="noopener noreferrer">
+</a>
 
 > ⚠️ **IMPORTANT — PLEASE WAIT 1–2 MINUTES BEFORE USING THE WEBSITE**
 >
