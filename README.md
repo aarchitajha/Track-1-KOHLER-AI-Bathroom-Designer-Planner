@@ -119,7 +119,6 @@ The system curates fixture finishes, materials, and form factors across three pr
 
 ### AI & Machine Learning
 - **Hosted Cloud LLM:** Groq API (`openai/gpt-oss-120b` or Llama models via OpenAI-compatible SDK)
-- **Vision & Multimodal:** Anthropic Claude API (`claude-3-5-sonnet-20241022`)
 - **Local / Offline LLM Fallback:** Ollama (`llama3.2`, `llama3.2-vision`, `llava`) via `ollama` Python SDK
 - **Intent Routing:** Deterministic pattern-matching engine for sub-millisecond intent handling
 
@@ -153,7 +152,6 @@ graph TB
 
     subgraph Intelligence [AI & Vision Providers]
         Groq[Groq API - gpt-oss-120b / Llama]
-        Claude[Anthropic Claude 3.5 Sonnet]
         Ollama[Local Ollama Instance]
     end
 
@@ -175,7 +173,6 @@ graph TB
     IntentRouter -->|Fast path| OptEngine
 
     LLMService --> Groq
-    LLMService --> Claude
     LLMService --> Ollama
 
     OptEngine --> PlaceEngine
@@ -434,7 +431,6 @@ Configure backend settings in `backend/.env`. Existing operating system environm
 | `DATABASE_URL` | SQLAlchemy connection string for catalog and sketch storage | `sqlite:///./kohler.db` | No |
 | `GROQ_API_KEY` | API key for hosted Groq LLM inference | `gsk_YOUR_KEY_HERE` | Yes (if not using Anthropic/Ollama) |
 | `GROQ_MODEL` | Model identifier on Groq | `openai/gpt-oss-120b` | No |
-| `ANTHROPIC_API_KEY` | Anthropic Claude API key for multimodal vision and chat | `sk-ant-YOUR_KEY_HERE` | Optional |
 | `OLLAMA_BASE_URL` | Base URL for local Ollama instance | `http://localhost:11434` | Optional |
 | `OLLAMA_MODEL` | Local Ollama model identifier for chat | `llama3.2` | Optional |
 | `OLLAMA_KEEP_ALIVE` | Memory residency duration for warmed-up Ollama models | `60m` | Optional |
@@ -517,16 +513,15 @@ The backend implements an automatic provider resolution and fallback hierarchy:
 ┌────────────────────────────────────────────────────────┐
 │               Provider Detection Flow                  │
 │                                                        │
-│  1. Check for ANTHROPIC_API_KEY                        │
-│     └── If valid 'sk-ant-*' -> Use Anthropic Claude    │
 │                                                        │
-│  2. Check for GROQ_API_KEY                             │
+│                                                        │
+│  1. Check for GROQ_API_KEY                             │
 │     └── If valid 'gsk_*'    -> Use Groq Cloud LLM      │
 │                                                        │
-│  3. Check OLLAMA_BASE_URL (http://localhost:11434)     │
+│  2. Check OLLAMA_BASE_URL (http://localhost:11434)     │
 │     └── If daemon responds  -> Use Local Ollama        │
 │                                                        │
-│  4. None Configured                                    │
+│  3. None Configured                                    │
 │     └── Fail loudly at startup with descriptive error  │
 └────────────────────────────────────────────────────────┘
 ```
@@ -558,11 +553,15 @@ The system requires at least one valid LLM provider at startup and explicitly re
 <!-- Placeholder for Application Screenshots -->
 | 3D Realistic Room Visualizer | 2D Architectural CAD Floor Plan |
 | :---: | :---: |
-| *[Screenshot Placeholder: 3D Room Visualizer with Kohler Modern Suite]* | *[Screenshot Placeholder: 2D SVG Floor Plan with Clearance Envelopes]* |
+| *<img width="958" height="470" alt="image" src="https://github.com/user-attachments/assets/2f758df5-dd56-4854-8b8b-890e6acfea1c" />
+* | *<img width="946" height="475" alt="image" src="https://github.com/user-attachments/assets/e0ae5a5b-a2d5-43f0-9ece-463d3d031618" />
+* |
 
-| Conversational AI Designer Agent | Augmented Reality (AR) Studio |
+| Conversational AI Designer Agent |Curated Kohler Suites |
 | :---: | :---: |
-| *[Screenshot Placeholder: AI Chat Drawer with Tool Execution]* | *[Screenshot Placeholder: WebXR AR Full Suite Placement]* |
+| *<img width="948" height="473" alt="image" src="https://github.com/user-attachments/assets/4568533d-3820-414a-939f-f1aba5d01f14" />
+* | *<img width="950" height="474" alt="image" src="https://github.com/user-attachments/assets/4ad16557-27c8-4bdf-b400-d648d69b278c" />
+* |
 
 ---
 
