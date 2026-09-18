@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, ExternalLink, CheckCircle2, Droplets, ShieldCheck, Smartphone } from 'lucide-react';
+import { launchWebXRARSession } from '../utils/arSession';
 
 function isIOSPlatform() {
   if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
@@ -220,14 +221,12 @@ export default function FixtureDetailModal({ fixture, onClose }) {
           {arMode === 'webxr' && (
             <button
               onClick={async () => {
-                if (navigator.xr) {
-                  try {
-                    await navigator.xr.requestSession('immersive-ar', {
-                      requiredFeatures: ['hit-test']
-                    });
-                  } catch (e) {
-                    console.warn('[AR] WebXR session:', e);
-                  }
+                try {
+                  await launchWebXRARSession({
+                    selectedFixture: fixture
+                  });
+                } catch (e) {
+                  console.warn('[AR] WebXR session failed:', e);
                 }
               }}
               className="btn btn-primary"

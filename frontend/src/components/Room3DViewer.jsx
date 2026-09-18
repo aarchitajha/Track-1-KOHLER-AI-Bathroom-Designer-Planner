@@ -5,6 +5,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import * as THREE from 'three';
 import { RotateCcw, Box, Info, Eye, Compass, Smartphone } from 'lucide-react';
 import ARSelectionModal from './ARSelectionModal';
+import { launchWebXRARSession } from '../utils/arSession';
 
 // ==========================================
 // 1. FINISH & MATERIAL FACTORY (PBR)
@@ -802,21 +803,18 @@ function ARButton({ bundle, onStartAR }) {
     try {
       if (onStartAR) {
         await onStartAR(selectedFixture);
-      } else if (navigator.xr) {
-        const session = await navigator.xr.requestSession('immersive-ar', {
-          requiredFeatures: ['hit-test'],
-          optionalFeatures: ['dom-overlay'],
-        });
-        session.addEventListener('end', () => {
-          setIsStarting(false);
+      } else {
+        await launchWebXRARSession({
+          bundle,
+          selectedFixture,
+          onEnd: () => setIsStarting(false)
         });
       }
     } catch (err) {
       console.warn('[AR] Could not start WebXR session:', err);
-    } finally {
       setIsStarting(false);
     }
-  }, [onStartAR]);
+  }, [bundle, onStartAR]);
 
   // Hide the AR control entirely on desktop or unsupported browsers
   if (arMode === 'unsupported' || arMode === 'detecting') {
