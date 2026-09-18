@@ -548,20 +548,32 @@ The system requires at least one valid LLM provider at startup and explicitly re
 
 ---
 
-## Screenshots / Demo
+## Screenshots
 
-<!-- Placeholder for Application Screenshots -->
-| 3D Realistic Room Visualizer | 2D Architectural CAD Floor Plan |
-| :---: | :---: |
-| *<img width="958" height="470" alt="image" src="https://github.com/user-attachments/assets/2f758df5-dd56-4854-8b8b-890e6acfea1c" />
-* | *<img width="946" height="475" alt="image" src="https://github.com/user-attachments/assets/e0ae5a5b-a2d5-43f0-9ece-463d3d031618" />
-* |
+### 3D Realistic Room Visualizer
 
-| Conversational AI Designer Agent |Curated Kohler Suites |
-| :---: | :---: |
-| *<img width="948" height="473" alt="image" src="https://github.com/user-attachments/assets/4568533d-3820-414a-939f-f1aba5d01f14" />
-* | *<img width="950" height="474" alt="image" src="https://github.com/user-attachments/assets/4ad16557-27c8-4bdf-b400-d648d69b278c" />
-* |
+<p align="center">
+  <img width="958" height="470" alt="3D Realistic Room Visualizer" src="https://github.com/user-attachments/assets/2f758df5-dd56-4854-8b8b-890e6acfea1c" />
+</p>
+
+### 2D Architectural CAD Floor Plan
+
+<p align="center">
+  <img width="946" height="475" alt="2D Architectural CAD Floor Plan" src="https://github.com/user-attachments/assets/e0ae5a5b-a2d5-43f0-9ece-463d3d031618" />
+</p>
+
+### Conversational AI Designer Agent
+
+<p align="center">
+  <img width="948" height="473" alt="Conversational AI Designer Agent" src="https://github.com/user-attachments/assets/4568533d-3820-414a-939f-f1aba5d01f14" />
+</p>
+
+### Curated KOHLER Suites
+
+<p align="center">
+  <img width="950" height="474" alt="Curated KOHLER Suites" src="https://github.com/user-attachments/assets/4ad16557-27c8-4bdf-b400-d648d69b278c" />
+</p>
+
 
 ---
 
@@ -594,12 +606,6 @@ The system requires at least one valid LLM provider at startup and explicitly re
 - **BIM Revit / IFC Export:** Direct export of 3D bathroom layouts into standard BIM formats for professional architects.
 - **Plumbing Rough-In Routing Visualizer:** Procedural 3D visualization of in-wall supply lines, drain pipe slopes, and vent stacks.
 - **Multi-Room Project Management:** Ability to save and organize multiple bathrooms within a single residential project.
-
----
-
-## Authors
-
-- **KOHLER AI Challenge Team** — Track 1: AI Bathroom Designer & Planner
 
 ---
 
