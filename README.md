@@ -2,6 +2,29 @@
 
 > Intelligent multi-constraint bathroom design, spatial clearance validation, real-time 3D/2D visualization, conversational fixture refinement, and cross-platform Augmented Reality powered by authentic Kohler India catalog data.
 
+
+# 🚨 LIVE PRODUCTION DEMO — PLEASE READ FIRST
+
+### 🌐 Production Website
+
+**[OPEN KOHLER AI BATHROOM DESIGNER](https://kohler-ai-bathroom-designer-planner-e1r8xz0z9.vercel.app/)**
+
+> ⚠️ **IMPORTANT — PLEASE WAIT 1–2 MINUTES BEFORE USING THE WEBSITE**
+>
+> The **backend is deployed on Render**, and the free-tier service may go to sleep after a period of inactivity. When this happens, the backend needs some time to start again.
+>
+> **If the website does not load properly, the AI does not respond, or any feature appears unavailable:**
+>
+> **1. Wait at least 1–2 minutes.**
+> **2. Reload / refresh the website.**
+> **3. The application should then work normally.**
+>
+> **Please do not close the website immediately if it appears to be loading — give the Render backend time to wake up.**
+
+---
+
+# KOHLER AI Bathroom Designer & Planner
+
 ---
 
 ## Overview
@@ -230,7 +253,7 @@ Ensure the following tools are installed on your system:
 - **Python:** Version 3.10 or higher
 - **Node.js:** Version 18.0 or higher (with `npm`)
 - **Git:** Latest version
-- **LLM Access:** An API key for **Groq** (free tier available at [console.groq.com](https://console.groq.com)), or a local **Ollama** installation.
+- **LLM Access:** An API key for **Groq** (free tier available at [console.groq.com](https://console.groq.com)), or a local **Ollama** installation(optional, if you dont want groq).
 
 ---
 
@@ -269,6 +292,91 @@ cd kohler-ai-bathroom-designer
    GROQ_API_KEY=gsk_YOUR_GROQ_API_KEY_HERE
    GROQ_MODEL=openai/gpt-oss-120b
    ```
+   #### Optional: Ollama Local LLM Setup
+
+If you prefer to run the AI models locally instead of using a cloud-based Groq API, you can use **Ollama**.
+
+> **Note:** Ollama is optional. You do **not** need to install Ollama if you are using Groq.
+
+**1. Install Ollama**
+
+Download and install Ollama from the official website:
+
+https://ollama.com/
+
+**2. Verify the installation**
+
+Open a new PowerShell window and run:
+
+```powershell
+ollama --version
+```
+
+**3. Download the required model**
+
+For the local conversational AI:
+
+```powershell
+ollama pull llama3.2
+```
+
+Verify that the model has been downloaded:
+
+```powershell
+ollama list
+```
+
+**4. Configure Ollama in `backend/.env`**
+
+If you are using Ollama instead of Groq, configure:
+
+```env
+DATABASE_URL=sqlite:///./kohler.db
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.2
+OLLAMA_KEEP_ALIVE=60m
+```
+
+**5. Verify Ollama is running**
+
+Run:
+
+```powershell
+ollama run llama3.2
+```
+
+If the model starts successfully, Ollama is ready to use.
+
+Then start the backend normally:
+
+```powershell
+uvicorn backend.main:app --host 0.0.0.0 --port 8004 --reload
+```
+
+### Optional Vision Models
+
+For local sketch/photo analysis, the application can also use Ollama vision models when supported by the backend configuration.
+
+Available models include:
+
+```powershell
+ollama pull llama3.2-vision
+```
+
+or:
+
+```powershell
+ollama pull llava
+```
+
+You can verify installed models with:
+
+```powershell
+ollama list
+```
+
+> **For the easiest setup, use Groq for the deployed/cloud application and Ollama when running the project locally.**
+
 
 4. **Seed the database:**
 
