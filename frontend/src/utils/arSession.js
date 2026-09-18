@@ -230,48 +230,93 @@ export function createProceduralMesh(fixture) {
 // ==========================================
 export async function buildARSuiteGroup({ bundle, selectedFixture }) {
   const arRoot = new THREE.Group();
-  // Main 3D room coordinate unit is feet (1 unit = 1 foot).
-  // WebXR physical space unit is meters (1 unit = 1 meter).
-  // 1 foot = 0.3048 meters.
-  const SCALE_FT_TO_M = 0.3048;
-  arRoot.scale.set(SCALE_FT_TO_M, SCALE_FT_TO_M, SCALE_FT_TO_M);
 
-  const fixturesToPlace = selectedFixture ? [selectedFixture] : (bundle?.fixtures || []);
+  const SCALE_FT_TO_M = 0.3048;
+  arRoot.scale.set(
+    SCALE_FT_TO_M,
+    SCALE_FT_TO_M,
+    SCALE_FT_TO_M
+  );
+
+  const fixturesToPlace = selectedFixture
+    ? [selectedFixture]
+    : Array.isArray(bundle?.fixtures)
+      ? [...bundle.fixtures]
+      : [];
+
+  console.log('[AR FULL SUITE] Fixture count:', fixturesToPlace.length);
 
   for (const f of fixturesToPlace) {
+    console.log('[AR FULL SUITE] Processing:', f);
+
     const fixtureWrapper = new THREE.Group();
+
     if (selectedFixture) {
-      // Single fixture mode: center fixture on floor plane origin
       fixtureWrapper.position.set(0, 0, 0);
       fixtureWrapper.rotation.set(0, 0, 0);
     } else {
-      // Full Suite mode: preserve exact relative layout, positions, and rotations
       const [px, py, pz] = f.position || [0, 0, 0];
       const [rx, ry, rz] = f.rotation || [0, 0, 0];
+
       fixtureWrapper.position.set(px, py, pz);
       fixtureWrapper.rotation.set(rx, ry, rz);
     }
 
     let modelObj = null;
+
     if (f.sku) {
       try {
         const rawScene = await loadGLTFScene(f.sku);
+
         if (rawScene) {
           modelObj = cloneGLTFScene(rawScene);
-          applyPBRMaterials(modelObj, f.finish, f.category);
+
+          applyPBRMaterials(
+            modelObj,
+            f.finish,
+            f.category
+          );
+
+          console.log(
+            '[AR FULL SUITE] Model loaded:',
+            f.sku
+          );
         }
       } catch (err) {
-        console.warn(`[WebXR AR] Could not load GLB for SKU "${f.sku}":`, err);
+        console.warn(
+          `[AR FULL SUITE] Failed to load ${f.sku}:`,
+          err
+        );
       }
     }
 
     if (!modelObj) {
+      console.warn(
+        '[AR FULL SUITE] Using procedural fallback:',
+        f.sku
+      );
+
       modelObj = createProceduralMesh(f);
     }
 
     fixtureWrapper.add(modelObj);
+
+    // IMPORTANT:
+    // Every fixture gets its own independent wrapper.
     arRoot.add(fixtureWrapper);
+
+    console.log(
+      '[AR FULL SUITE] Added:',
+      f.sku,
+      'Total objects:',
+      arRoot.children.length
+    );
   }
+
+  console.log(
+    '[AR FULL SUITE] FINAL OBJECT COUNT:',
+    arRoot.children.length
+  );
 
   return arRoot;
 }
