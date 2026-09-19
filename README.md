@@ -6,9 +6,9 @@
 
 🎥 [Video Demo](https://drive.google.com/drive/u/0/folders/1ZtINOZo-JF6RMHSI7ad29KdCS-YCApln)
 
-📄 [Prompt Documentation](./submission/Prompt_Documentation.pdf)
+📄 [Prompt Documentation](./1.submission/Prompt_Documentation.pdf)
 
-📊 [Presentation Deck](./submission/Presentation_Deck.pdf)
+📊 [Presentation Deck](./1.submission/Presentation_Deck.pdf)
 
 # 🚨 LIVE PRODUCTION DEMO — PLEASE READ FIRST
 
