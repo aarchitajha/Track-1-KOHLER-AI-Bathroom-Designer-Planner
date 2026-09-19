@@ -2,13 +2,20 @@
 
 > Intelligent multi-constraint bathroom design, spatial clearance validation, real-time 3D/2D visualization, conversational fixture refinement, and cross-platform Augmented Reality powered by authentic Kohler India catalog data.
 
+## Submission Materials
+
+🎥 [Video Demo](https://drive.google.com/drive/u/0/folders/1ZtINOZo-JF6RMHSI7ad29KdCS-YCApln)
+
+📄 [Prompt Documentation](./submission/Prompt_Documentation.pdf)
+
+📊 [Presentation Deck](./submission/Presentation_Deck.pdf)
 
 # 🚨 LIVE PRODUCTION DEMO — PLEASE READ FIRST
 
 ### 🌐 Production Website
 
-<a href="https://kohler-ai-bathroom-designer-planner-e1r8xz0z9.vercel.app/" target="_blank" rel="noopener noreferrer">
-  https://kohler-ai-bathroom-designer-planner-e1r8xz0z9.vercel.app/
+<a href="https://kohler-ai-bathroom-designer-planner.vercel.app/" target="_blank" rel="noopener noreferrer">
+ https://kohler-ai-bathroom-designer-planner.vercel.app/
 </a>
 
 > ⚠️ **IMPORTANT — PLEASE WAIT 1–2 MINUTES BEFORE USING THE WEBSITE**
